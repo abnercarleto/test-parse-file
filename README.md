@@ -8,10 +8,18 @@ Things you may want to cover:
 * Ruby version
 
 * System dependencies
+```bash
+docker-compose run --rm web bundle install
+```
 
 * Configuration
 
 * Database creation
+
+```bash
+docker-compose run --rm web rails db:create
+docker-compose run --rm web rails db:migrate
+```
 
 * Database initialization
 
