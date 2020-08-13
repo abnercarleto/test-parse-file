@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :sale do
-    purchaser { nil }
+    association :purchaser
   end
 end
