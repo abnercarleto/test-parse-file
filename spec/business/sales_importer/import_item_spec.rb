@@ -28,6 +28,13 @@ RSpec.describe SalesImporter::ImportItem, type: :business do
         expect(item.price).to eq item_price.to_d
         expect(item.count).to eq purchase_count
       end
+
+      it 'should call import_product' do
+        import_call
+        expect(import_product).to have_received(:call) do |row|
+          expect(row).to be_a(SalesImporter::Row)
+        end
+      end
     end
 
     context 'when item exists' do
@@ -42,6 +49,13 @@ RSpec.describe SalesImporter::ImportItem, type: :business do
         expect(item.product).to eq product
         expect(item.price).to eq item_price.to_d
         expect(item.count).to eq purchase_count
+      end
+
+      it 'should call import_product' do
+        import_call
+        expect(import_product).to have_received(:call) do |row|
+          expect(row).to be_a(SalesImporter::Row)
+        end
       end
     end
 
@@ -58,6 +72,13 @@ RSpec.describe SalesImporter::ImportItem, type: :business do
         expect(item.price).to eq item_price.to_d
         expect(item.count).to eq purchase_count
       end
+
+      it 'should call import_product' do
+        import_call
+        expect(import_product).to have_received(:call) do |row|
+          expect(row).to be_a(SalesImporter::Row)
+        end
+      end
     end
 
     context 'when item exists with same sale' do
@@ -73,6 +94,13 @@ RSpec.describe SalesImporter::ImportItem, type: :business do
         expect(item.price).to eq item_price.to_d
         expect(item.count).to eq purchase_count
       end
+
+      it 'should call import_product' do
+        import_call
+        expect(import_product).to have_received(:call) do |row|
+          expect(row).to be_a(SalesImporter::Row)
+        end
+      end
     end
 
     context 'when item exists with same product and sale' do
@@ -87,6 +115,13 @@ RSpec.describe SalesImporter::ImportItem, type: :business do
         expect(item.product).to eq product
         expect(item.price).to eq item_price.to_d
         expect(item.count).to eq purchase_count
+      end
+
+      it 'should call import_product' do
+        import_call
+        expect(import_product).to have_received(:call) do |row|
+          expect(row).to be_a(SalesImporter::Row)
+        end
       end
     end
   end
