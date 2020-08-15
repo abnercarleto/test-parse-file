@@ -14,14 +14,22 @@ module SalesImporter
     end
 
     def call
-      parser.
-        call(file_content).
-        then { |rows| rows.group_by { |row| row.purchaser_name } }.
-        map { |key, group| group_importer.call(key, group) }
+      ActiveRecord::Base.transaction do
+        parser.
+          call(file_content).
+          then { |rows| rows.group_by { |row| row.purchaser_name } }.
+          map { |key, group| group_importer.call(sale_import, key, group) }
+      end
+
+      sale_import
     end
 
     private
 
     attr_reader :file_content, :parser, :group_importer
+
+    def sale_import
+      @sale_import ||= SaleImport.create!
+    end
   end
 end

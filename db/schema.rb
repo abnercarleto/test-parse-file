@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_13_032326) do
+ActiveRecord::Schema.define(version: 2020_08_15_025141) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,15 +51,23 @@ ActiveRecord::Schema.define(version: 2020_08_13_032326) do
     t.index ["name"], name: "index_purchasers_on_name", unique: true
   end
 
+  create_table "sale_imports", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "sales", force: :cascade do |t|
     t.bigint "purchaser_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "sale_import_id"
     t.index ["purchaser_id"], name: "index_sales_on_purchaser_id"
+    t.index ["sale_import_id"], name: "index_sales_on_sale_import_id"
   end
 
   add_foreign_key "items", "products"
   add_foreign_key "items", "sales"
   add_foreign_key "products", "merchants"
   add_foreign_key "sales", "purchasers"
+  add_foreign_key "sales", "sale_imports"
 end

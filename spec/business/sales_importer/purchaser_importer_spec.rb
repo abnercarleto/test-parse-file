@@ -5,10 +5,12 @@ RSpec.describe SalesImporter::PurchaserImporter, type: :business do
   include_context 'Parser Context'
 
   let(:import_item) { class_spy('ImportItem') }
+  let(:sale_import) { create(:sale_import) }
 
   describe '.call' do
     subject(:import_call) do
-      described_class.call(purchaser_name,
+      described_class.call(sale_import,
+                           purchaser_name,
                            [importer_row],
                            import_item: import_item)
     end
@@ -30,6 +32,7 @@ RSpec.describe SalesImporter::PurchaserImporter, type: :business do
         expect(sale).to be_persisted
         expect(sale.purchaser).to be_persisted
         expect(sale.purchaser.name).to eq purchaser_name
+        expect(sale.sale_import).to eq sale_import
       end
 
       it 'should call import_item' do
@@ -59,7 +62,11 @@ RSpec.describe SalesImporter::PurchaserImporter, type: :business do
     end
 
     context 'when puchaser exists with some sale' do
-      before { create(:purchaser, name: purchaser_name).sales.create! }
+      before do
+        create(:purchaser, name: purchaser_name).
+          sales.
+          create!(sale_import: sale_import)
+      end
 
       it do
         expect { import_call }.to change { Purchaser.count }.by(0).

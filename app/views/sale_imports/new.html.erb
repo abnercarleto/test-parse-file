@@ -1,0 +1,24 @@
+<h1>SalesImport#new</h1>
+
+<%= form_with(model: @form_object, url: sale_imports_path) do |form| %>
+  <% if @form_object.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@form_object.errors.count, "error") %> prohibited this form_object from being saved:</h2>
+
+      <ul>
+        <% @form_object.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :file %>
+    <%= form.file_field :file %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit :import %>
+  </div>
+<% end %>

@@ -6,7 +6,8 @@ module SalesImporter
       end
     end
 
-    def initialize(purchaser_name, group, import_item: ImportItem)
+    def initialize(sale_import, purchaser_name, group, import_item: ImportItem)
+      @sale_import = sale_import
       @purchaser_name = purchaser_name
       @group = group
       @import_item = import_item
@@ -21,14 +22,14 @@ module SalesImporter
 
     private
 
-    attr_reader :purchaser_name, :group, :import_item
+    attr_reader :sale_import, :purchaser_name, :group, :import_item
 
     def purchaser
       Purchaser.find_or_create_by!(name: purchaser_name)
     end
 
     def create_sale
-      purchaser.sales.create!
+      purchaser.sales.create!(sale_import: sale_import)
     end
   end
 end

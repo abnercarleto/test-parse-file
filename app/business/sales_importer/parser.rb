@@ -1,3 +1,5 @@
+require 'csv'
+
 module SalesImporter
   class Parser
     PARSE_OPTIONS = {

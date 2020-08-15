@@ -22,11 +22,11 @@ RSpec.describe SalesImporter::Importer, type: :business do
 
       it { expect(parser).to have_received(:call).with(file_content) }
       it 'should group_importer receive two groups of purchasers' do
-        expect(group_importer).to have_received(:call).
-          with(importer_row.purchaser_name, [importer_row])
-
-        expect(group_importer).to have_received(:call).
-          with(importer_row_2.purchaser_name, [importer_row_2])
+        expect(group_importer).to have_received(:call).twice do |sale_import, name, group|
+          expect(sale_import).to be_a SaleImport
+          expect(name).to be_a String
+          expect(group).to be_a Array
+        end
       end
     end
 
@@ -38,8 +38,11 @@ RSpec.describe SalesImporter::Importer, type: :business do
 
       it { expect(parser).to have_received(:call).with(file_content) }
       it 'should group_importer receive two groups of purchasers' do
-        expect(group_importer).to have_received(:call).
-          with(importer_row.purchaser_name, [importer_row, importer_row])
+        expect(group_importer).to have_received(:call) do |sale_import, name, group|
+          expect(sale_import).to be_a SaleImport
+          expect(name).to be_a String
+          expect(group).to be_a Array
+        end
       end
     end
 
