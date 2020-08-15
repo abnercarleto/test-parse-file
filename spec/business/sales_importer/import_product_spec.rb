@@ -25,6 +25,13 @@ RSpec.describe SalesImporter::ImportProduct, type: :business do
         expect(product.description).to eq item_description
         expect(product.merchant).to eq merchant
       end
+
+      it 'should call import_merchant' do
+        import_call
+        expect(import_merchant).to have_received(:call) do |row|
+          expect(row).to be_a(SalesImporter::Row)
+        end
+      end
     end
 
     context 'when product exists' do
@@ -33,6 +40,13 @@ RSpec.describe SalesImporter::ImportProduct, type: :business do
       end
 
       it { expect { import_call }.to change { Product.count }.by(0) }
+
+      it 'should call import_merchant' do
+        import_call
+        expect(import_merchant).to have_received(:call) do |row|
+          expect(row).to be_a(SalesImporter::Row)
+        end
+      end
     end
 
     context 'when product exists with same description' do
@@ -46,6 +60,13 @@ RSpec.describe SalesImporter::ImportProduct, type: :business do
         expect(product.description).to eq item_description
         expect(product.merchant).to eq merchant
       end
+
+      it 'should call import_merchant' do
+        import_call
+        expect(import_merchant).to have_received(:call) do |row|
+          expect(row).to be_a(SalesImporter::Row)
+        end
+      end
     end
 
     context 'when product exists with same merchant' do
@@ -58,6 +79,13 @@ RSpec.describe SalesImporter::ImportProduct, type: :business do
         expect(product).to be_persisted
         expect(product.description).to eq item_description
         expect(product.merchant).to eq merchant
+      end
+
+      it 'should call import_merchant' do
+        import_call
+        expect(import_merchant).to have_received(:call) do |row|
+          expect(row).to be_a(SalesImporter::Row)
+        end
       end
     end
   end
