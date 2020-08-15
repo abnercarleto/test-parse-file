@@ -4,9 +4,19 @@ require 'csv'
 RSpec.describe SalesImporter::PurchaserImporter, type: :business do
   include_context 'Parser Context'
 
+  let(:import_item) { class_spy('ImportItem') }
+
   describe '.call' do
     subject(:import_call) do
-      described_class.call(purchaser_name, [importer_row])
+      described_class.call(purchaser_name,
+                           [importer_row],
+                           import_item: import_item)
+    end
+
+    before do
+      allow(import_item).to receive(:call) do |sale, _row|
+        create(:item, sale: sale)
+      end
     end
 
     context 'when puchaser not exists' do
@@ -16,10 +26,18 @@ RSpec.describe SalesImporter::PurchaserImporter, type: :business do
       end
 
       it 'should create a purchaser with sale' do
-        puchaser = import_call
-        expect(puchaser).to be_persisted
-        expect(puchaser.sales.last).to be_persisted
-        expect(puchaser.name).to eq purchaser_name
+        sale = import_call
+        expect(sale).to be_persisted
+        expect(sale.purchaser).to be_persisted
+        expect(sale.purchaser.name).to eq purchaser_name
+      end
+
+      it 'should call import_item' do
+        import_call
+        expect(import_item).to have_received(:call) do |sale, row|
+          expect(sale).to be_a(Sale).and be_persisted
+          expect(row).to be_a(SalesImporter::Row)
+        end
       end
     end
 
@@ -30,6 +48,14 @@ RSpec.describe SalesImporter::PurchaserImporter, type: :business do
         expect { import_call }.to change { Purchaser.count }.by(0).
                                   and change { Sale.count }.by(1)
       end
+
+      it 'should call import_item' do
+        import_call
+        expect(import_item).to have_received(:call) do |sale, row|
+          expect(sale).to be_a(Sale).and be_persisted
+          expect(row).to be_a(SalesImporter::Row)
+        end
+      end
     end
 
     context 'when puchaser exists with some sale' do
@@ -38,6 +64,14 @@ RSpec.describe SalesImporter::PurchaserImporter, type: :business do
       it do
         expect { import_call }.to change { Purchaser.count }.by(0).
                                   and change { Sale.count }.by(1)
+      end
+
+      it 'should call import_item' do
+        import_call
+        expect(import_item).to have_received(:call) do |sale, row|
+          expect(sale).to be_a(Sale).and be_persisted
+          expect(row).to be_a(SalesImporter::Row)
+        end
       end
     end
   end
